@@ -1,0 +1,20 @@
+{
+  "name": "Math Rush",
+  "short_name": "Math Rush",
+  "description": "Fast-paced arithmetic practice game",
+  "start_url": "./index.html",
+  "scope": "./",
+  "id": "./index.html",
+  "display": "standalone",
+  "display_override": ["fullscreen", "standalone"],
+  "orientation": "landscape",
+  "lang": "he",
+  "dir": "rtl",
+  "theme_color": "#e6f5ff",
+  "background_color": "#e6f5ff",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icons/icon-512-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

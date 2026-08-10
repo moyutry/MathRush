@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Math Rush">
+<meta name="theme-color" content="#e6f5ff">
+<meta name="description" content="Math Rush - fast-paced arithmetic practice game">
+<title>Math Rush</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/favicon.ico" sizes="any">
+<link rel="icon" href="icons/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon-180.png">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div id="game-wrapper">
+  <canvas id="game-canvas"></canvas>
+</div>
+
+<div id="rotate-overlay" aria-hidden="true">
+  <div class="rotate-card">
+    <svg class="rotate-icon" viewBox="0 0 100 100" width="96" height="96">
+      <rect x="30" y="10" width="40" height="70" rx="7" fill="none" stroke="currentColor" stroke-width="5"/>
+      <circle cx="50" cy="72" r="2.6" fill="currentColor"/>
+      <path class="rotate-arrow" d="M 78 30 A 32 32 0 0 1 78 62" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>
+      <path class="rotate-arrow-head" d="M 70 58 L 78 62 L 82 53" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <div class="rotate-text-he">סובבו את המכשיר לרוחב</div>
+    <div class="rotate-text-en">Please rotate your device</div>
+  </div>
+</div>
+
+<div id="unlock-overlay">
+  <div class="unlock-card">
+    <div class="unlock-title">MATH RUSH</div>
+    <div class="unlock-sub">גע כדי להתחיל · Tap to start</div>
+  </div>
+</div>
+
+<noscript>This game requires JavaScript.</noscript>
+
+<script src="js/data/themes.js"></script>
+<script src="js/data/i18n.js"></script>
+<script src="js/data/text-rtl.js"></script>
+<script src="js/data/battlepass.js"></script>
+<script src="js/data/defaults.js"></script>
+<script src="js/storage/save-store.js"></script>
+<script src="js/audio/particle.js"></script>
+<script src="js/audio/sound-manager.js"></script>
+<script src="js/core/canvas-scale.js"></script>
+<script src="js/core/input.js"></script>
+<script src="js/core/loop.js"></script>
+<script src="js/ui/draw-utils.js"></script>
+<script src="js/ui/button.js"></script>
+<script src="js/ui/setting-carousel.js"></script>
+<script src="js/ui/setting-input.js"></script>
+<script src="js/ui/ops-selector.js"></script>
+<script src="js/ui/numpad.js"></script>
+<script src="js/ui/virtual-keyboard.js"></script>
+<script src="js/game/visual-counters.js"></script>
+<script src="js/game/vertical-math.js"></script>
+<script src="js/game/player-state.js"></script>
+<script src="js/screens/intro.js"></script>
+<script src="js/screens/profiles.js"></script>
+<script src="js/screens/confirm-delete.js"></script>
+<script src="js/screens/text-input.js"></script>
+<script src="js/screens/menu.js"></script>
+<script src="js/screens/settings.js"></script>
+<script src="js/screens/vs-setup.js"></script>
+<script src="js/screens/countdown.js"></script>
+<script src="js/screens/gameplay.js"></script>
+<script src="js/screens/over.js"></script>
+<script src="js/screens/stats.js"></script>
+<script src="js/screens/battlepass.js"></script>
+<script src="js/app/rotate-overlay.js"></script>
+<script src="js/app/game-app.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>

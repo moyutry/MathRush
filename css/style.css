@@ -1,0 +1,138 @@
+:root {
+  --theme-bg: #e6f5ff;
+  --theme-text: #28324a;
+  --theme-highlight: #ffa500;
+}
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  height: 100dvh;
+  overflow: hidden;
+  overscroll-behavior: none;
+  background: #000;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans Hebrew", Tahoma, Arial, sans-serif;
+}
+
+#game-wrapper {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(ellipse at 50% 40%, var(--theme-bg), var(--theme-bg));
+  transition: background .35s ease;
+}
+
+#game-canvas {
+  display: block;
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* ---------- Rotate-to-landscape overlay ---------- */
+#rotate-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(160deg, #1b2436, #0c1220);
+  color: #fff;
+  text-align: center;
+}
+
+@media (orientation: portrait) {
+  #rotate-overlay {
+    display: flex;
+  }
+}
+
+.rotate-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 24px;
+}
+
+.rotate-icon {
+  color: #ffd23f;
+  animation: rotate-hint 1.8s ease-in-out infinite;
+}
+
+@keyframes rotate-hint {
+  0%   { transform: rotate(0deg); }
+  35%  { transform: rotate(-90deg); }
+  65%  { transform: rotate(-90deg); }
+  100% { transform: rotate(-90deg); }
+}
+
+.rotate-arrow, .rotate-arrow-head {
+  opacity: .85;
+}
+
+.rotate-text-he {
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.rotate-text-en {
+  font-size: 15px;
+  opacity: .7;
+}
+
+/* ---------- First-gesture audio/orientation unlock overlay ---------- */
+#unlock-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at 50% 40%, #274063, #0c1220);
+  color: #fff;
+  cursor: pointer;
+}
+
+#unlock-overlay.hidden {
+  display: none;
+}
+
+.unlock-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  animation: unlock-pulse 1.6s ease-in-out infinite;
+}
+
+.unlock-title {
+  font-size: clamp(28px, 6vw, 54px);
+  font-weight: 800;
+  letter-spacing: 2px;
+  color: #ffd23f;
+  text-shadow: 0 4px 0 rgba(0,0,0,.35);
+}
+
+.unlock-sub {
+  font-size: clamp(14px, 2.4vw, 20px);
+  opacity: .85;
+}
+
+@keyframes unlock-pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.035); opacity: .85; }
+}
