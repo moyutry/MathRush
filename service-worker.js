@@ -4,7 +4,7 @@
 // service workers require a secure/localhost context, so opening
 // index.html directly still plays fine, just without offline caching
 // until the app is served over http(s).
-const CACHE_NAME = "mathrush-cache-v3";
+const CACHE_NAME = "mathrush-cache-v4";
 
 const ASSETS = [
   "./",

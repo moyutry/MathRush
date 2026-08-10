@@ -16,8 +16,20 @@ MR.PWAInstall = {
       || window.navigator.standalone === true;
   },
 
+  // iOS Safari has no beforeinstallprompt API at all -- "Add to Home
+  // Screen" only exists as a manual step inside the native Share sheet, so
+  // the best a web page can do is detect the platform and show
+  // instructions instead of a real install trigger.
+  isIOS() {
+    return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+  },
+
   shouldShowButton() {
     return this.available && !this.isStandalone();
+  },
+
+  shouldShowIOSButton() {
+    return this.isIOS() && !this.isStandalone();
   },
 
   async promptInstall() {

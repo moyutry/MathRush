@@ -24,23 +24,32 @@ MR.Screens.Menu = {
 
     this.buttons = [this.btnSingle, this.btnVersus, this.btnBp, this.btnStats, this.btnSettings, this.btnSwitch];
 
-    // Small top-left "Install App" button -- only ever shown when the
-    // browser has actually offered the native install prompt and the app
-    // isn't already running installed/standalone (see js/app/pwa-install.js).
+    // Small top-left install button. Two mutually-exclusive variants share
+    // the same slot: Chrome/Android gets a real one-tap install trigger
+    // (see js/app/pwa-install.js); iOS Safari has no such API at all, so it
+    // gets a button that instead opens an in-canvas instructions panel for
+    // the manual Share -> Add to Home Screen flow.
     this.btnInstall = new MR.UI.Button(20, 20, 176, 60, "התקן אפליקציה", { hover: MR.Colors.GREEN, fontSize: 19 });
+    this.btnIOSInstall = new MR.UI.Button(20, 20, 176, 60, "הוסף למסך הבית", { hover: MR.Colors.GREEN, fontSize: 17 });
+    this.showIOSHint = false;
   },
 
   onPointerMove(app, pos) {
     this.buttons.forEach((b) => b.checkHover(pos));
     if (MR.PWAInstall.shouldShowButton()) this.btnInstall.checkHover(pos);
+    else if (MR.PWAInstall.shouldShowIOSButton()) this.btnIOSInstall.checkHover(pos);
   },
   onPointerDown(app, pos) {
+    if (this.showIOSHint) return;
     this.buttons.forEach((b) => b.onPointerDown(pos));
     if (MR.PWAInstall.shouldShowButton()) this.btnInstall.onPointerDown(pos);
+    else if (MR.PWAInstall.shouldShowIOSButton()) this.btnIOSInstall.onPointerDown(pos);
   },
 
   onPointerUp(app, pos) {
+    if (this.showIOSHint) { this.showIOSHint = false; return; }
     if (MR.PWAInstall.shouldShowButton() && this.btnInstall.onPointerUp(pos)) { MR.PWAInstall.promptInstall(); return; }
+    if (MR.PWAInstall.shouldShowIOSButton() && this.btnIOSInstall.onPointerUp(pos)) { this.showIOSHint = true; return; }
     if (this.btnSingle.onPointerUp(pos)) { app.startGame("SINGLE"); return; }
     if (this.btnVersus.onPointerUp(pos)) { app.goto("VS_SETUP"); return; }
     if (this.btnBp.onPointerUp(pos)) { app.goto("BATTLEPASS"); return; }
@@ -67,6 +76,7 @@ MR.Screens.Menu = {
 
     this.buttons.forEach((b) => b.draw(ctx));
     if (MR.PWAInstall.shouldShowButton()) this.btnInstall.draw(ctx);
+    else if (MR.PWAInstall.shouldShowIOSButton()) this.btnIOSInstall.draw(ctx);
 
     const comboStr = MR.I18N.isEn()
       ? `High Score: ${prof.high_score_single}   ·   Streak: ${prof.streak || 0}`
@@ -74,6 +84,60 @@ MR.Screens.Menu = {
     MR.RTL.draw(ctx, comboStr, cx, 646, { font: `700 22px ${MR.FONT_STACK}`, color: MR.Colors.LIGHT_GRAY });
 
     this._drawProgressBar(ctx, theme, prof, cx);
+
+    if (this.showIOSHint) this._drawIOSHint(ctx, theme);
+  },
+
+  _drawIOSHint(ctx, theme) {
+    ctx.save();
+    ctx.fillStyle = "rgba(0,0,0,0.6)";
+    ctx.fillRect(0, 0, MR.LOGICAL_W, MR.LOGICAL_H);
+    ctx.restore();
+
+    const cx = MR.LOGICAL_W / 2;
+    const w = 640, h = 320, x = cx - w / 2, y = MR.LOGICAL_H / 2 - h / 2;
+    MR.DrawUtils.panel(ctx, x, y, w, h, 24, theme, { border: theme.highlight, borderWidth: 4 });
+
+    MR.RTL.draw(ctx, MR.I18N.t("איך מתקינים באייפון?"), cx, y + 42, {
+      font: `800 30px ${MR.FONT_STACK}`, color: theme.highlight
+    });
+
+    this._drawShareIcon(ctx, cx, y + 96, theme.text);
+
+    const steps = [
+      "1. הקש על כפתור השיתוף בסרגל הכלים",
+      "2. גלול ובחר \"הוסף למסך הבית\"",
+      "3. הקש \"הוסף\" למעלה מימין"
+    ];
+    steps.forEach((s, i) => {
+      MR.RTL.draw(ctx, MR.I18N.t(s), cx, y + 160 + i * 38, {
+        font: `700 22px ${MR.FONT_STACK}`, color: theme.text
+      });
+    });
+
+    MR.RTL.draw(ctx, MR.I18N.t("הקש בכל מקום כדי לסגור"), cx, y + h - 26, {
+      font: `700 18px ${MR.FONT_STACK}`, color: MR.Colors.LIGHT_GRAY
+    });
+  },
+
+  // Small glyph approximating iOS' Share icon (a tray with an upward
+  // arrow) so the instructions are recognizable at a glance, not just text.
+  _drawShareIcon(ctx, cx, cy, color) {
+    ctx.save();
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 3;
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+    MR.DrawUtils.roundRectPath(ctx, cx - 17, cy - 2, 34, 26, 6);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(cx, cy - 24);
+    ctx.lineTo(cx, cy + 4);
+    ctx.moveTo(cx - 9, cy - 15);
+    ctx.lineTo(cx, cy - 24);
+    ctx.lineTo(cx + 9, cy - 15);
+    ctx.stroke();
+    ctx.restore();
   },
 
   _drawProgressBar(ctx, theme, prof, cx) {

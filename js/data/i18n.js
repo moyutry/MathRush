@@ -60,7 +60,13 @@ MR.I18N = {
     "רמה ": "Level ", "רמה מקסימלית!": "Max Level!",
     "רצף: ": "Streak: ", "הקפאות: ": "Freezes: ", "עוד ": "Next in ", " ימים להקפאה": " days to freeze",
     "פתרת ": "You solved ", " תרגילים!": " problems!", " ניצח!": " Won!",
-    "גע כדי להתחיל": "Tap to start", "טוען...": "Loading..."
+    "גע כדי להתחיל": "Tap to start", "טוען...": "Loading...",
+    "התקן אפליקציה": "Install App", "הוסף למסך הבית": "Add to Home Screen",
+    "איך מתקינים באייפון?": "How to install on iPhone?",
+    "1. הקש על כפתור השיתוף בסרגל הכלים": "1. Tap the Share button in the toolbar",
+    "2. גלול ובחר \"הוסף למסך הבית\"": "2. Scroll down and choose \"Add to Home Screen\"",
+    "3. הקש \"הוסף\" למעלה מימין": "3. Tap \"Add\" in the top corner",
+    "הקש בכל מקום כדי לסגור": "Tap anywhere to close"
   },
 
   isEn() {
