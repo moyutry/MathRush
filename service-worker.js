@@ -4,7 +4,7 @@
 // service workers require a secure/localhost context, so opening
 // index.html directly still plays fine, just without offline caching
 // until the app is served over http(s).
-const CACHE_NAME = "mathrush-cache-v2";
+const CACHE_NAME = "mathrush-cache-v3";
 
 const ASSETS = [
   "./",
@@ -46,6 +46,7 @@ const ASSETS = [
   "./js/screens/battlepass.js",
   "./js/app/rotate-overlay.js",
   "./js/app/game-app.js",
+  "./js/app/pwa-install.js",
   "./js/main.js",
   "./sounds/correct.mp3",
   "./sounds/wrong.mp3",

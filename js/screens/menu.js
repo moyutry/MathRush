@@ -23,12 +23,24 @@ MR.Screens.Menu = {
     this.btnSwitch   = new MR.UI.Button(col1, rowY(2), btnW, btnH, "החלף שחקן", { hover: MR.Colors.PURPLE });
 
     this.buttons = [this.btnSingle, this.btnVersus, this.btnBp, this.btnStats, this.btnSettings, this.btnSwitch];
+
+    // Small top-left "Install App" button -- only ever shown when the
+    // browser has actually offered the native install prompt and the app
+    // isn't already running installed/standalone (see js/app/pwa-install.js).
+    this.btnInstall = new MR.UI.Button(20, 20, 176, 60, "התקן אפליקציה", { hover: MR.Colors.GREEN, fontSize: 19 });
   },
 
-  onPointerMove(app, pos) { this.buttons.forEach((b) => b.checkHover(pos)); },
-  onPointerDown(app, pos) { this.buttons.forEach((b) => b.onPointerDown(pos)); },
+  onPointerMove(app, pos) {
+    this.buttons.forEach((b) => b.checkHover(pos));
+    if (MR.PWAInstall.shouldShowButton()) this.btnInstall.checkHover(pos);
+  },
+  onPointerDown(app, pos) {
+    this.buttons.forEach((b) => b.onPointerDown(pos));
+    if (MR.PWAInstall.shouldShowButton()) this.btnInstall.onPointerDown(pos);
+  },
 
   onPointerUp(app, pos) {
+    if (MR.PWAInstall.shouldShowButton() && this.btnInstall.onPointerUp(pos)) { MR.PWAInstall.promptInstall(); return; }
     if (this.btnSingle.onPointerUp(pos)) { app.startGame("SINGLE"); return; }
     if (this.btnVersus.onPointerUp(pos)) { app.goto("VS_SETUP"); return; }
     if (this.btnBp.onPointerUp(pos)) { app.goto("BATTLEPASS"); return; }
@@ -54,6 +66,7 @@ MR.Screens.Menu = {
     MR.RTL.draw(ctx, titleStr, cx, 130, { font: `700 22px ${MR.FONT_STACK}`, color: MR.Colors.PURPLE });
 
     this.buttons.forEach((b) => b.draw(ctx));
+    if (MR.PWAInstall.shouldShowButton()) this.btnInstall.draw(ctx);
 
     const comboStr = MR.I18N.isEn()
       ? `High Score: ${prof.high_score_single}   ·   Streak: ${prof.streak || 0}`
