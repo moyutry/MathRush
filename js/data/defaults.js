@@ -33,7 +33,9 @@ MR.Defaults = {
         theme: "צבעוני (ילדים)",
         vertical_math: false,
         language: "he",
-        visual_mode: false
+        visual_mode: false,
+        fractions_enabled: false,
+        fraction_ops: ["+"]
       }
     };
   },

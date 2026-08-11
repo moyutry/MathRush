@@ -61,7 +61,14 @@ MR.Store = {
         if (s.max_num === undefined) s.max_num = 20;
         if (s.time === undefined) s.time = 60;
         if (!s.active_ops || !s.active_ops.length) s.active_ops = ["+"];
+        if (s.fractions_enabled === undefined) s.fractions_enabled = false;
+        if (!s.fraction_ops || !s.fraction_ops.length) s.fraction_ops = ["+"];
       }
+      // Self-heal a save left corrupted by an older bug where a Guest
+      // versus-mode opponent got written into profiles and never cleaned
+      // up in the live save object (only stripped from the localStorage copy).
+      delete data.profiles["אורח"];
+      delete data.profiles["Guest"];
     }
 
     this.saveData = data;

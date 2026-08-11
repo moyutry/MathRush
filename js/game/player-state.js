@@ -92,6 +92,7 @@ MR.Game.PlayerState = class PlayerState {
     this.feedbackTimer = 0;
     this.shakeAmount = 0;
     MR.Game.VerticalMath.resetState(this);
+    MR.Game.FractionMath.resetState(this);
   }
 
   spawnParticles() {
@@ -103,8 +104,19 @@ MR.Game.PlayerState = class PlayerState {
   generateProblem() {
     const prof = MR.Store.saveData.profiles[this.profileName] || MR.Defaults.getDefaultProfile();
     const s = prof.settings;
-    const ops = s.active_ops && s.active_ops.length ? s.active_ops : ["+"];
-    const op = ops[randInt(0, ops.length - 1)];
+    const intOps = s.active_ops && s.active_ops.length ? s.active_ops : ["+"];
+    const fracOps = s.fractions_enabled && s.fraction_ops && s.fraction_ops.length ? s.fraction_ops : [];
+
+    // Integer ops and fraction ops are two fully independent toggle sets
+    // (see Settings' Operations/Fractions tabs) combined into one flat,
+    // uniformly-weighted pool -- so "regular multiplication" and "fraction
+    // multiplication" can be enabled/disabled in any combination.
+    const pool = intOps.map((o) => ({ kind: "int", op: o }))
+      .concat(fracOps.map((o) => ({ kind: "frac", op: o })));
+    const pick = pool[randInt(0, pool.length - 1)];
+    if (pick.kind === "frac") return this.generateFractionProblem(pick.op);
+
+    const op = pick.op;
     const maxN = s.max_num || 20;
 
     for (let attempt = 0; attempt < 100; attempt++) {
@@ -147,6 +159,19 @@ MR.Game.PlayerState = class PlayerState {
     return this.generateProblem();
   }
 
+  generateFractionProblem(op) {
+    for (let attempt = 0; attempt < 100; attempt++) {
+      const problem = MR.Game.FractionMath.generate(op);
+      const key = `f${op}${problem.a.n}/${problem.a.d}_${problem.b.n}/${problem.b.d}`;
+      if (!this.seenProblems.has(key)) {
+        this.seenProblems.add(key);
+        return problem;
+      }
+    }
+    this.seenProblems.clear();
+    return this.generateFractionProblem(op);
+  }
+
   onPointerDown(pos) {
     this.numpad.onPointerDown(pos);
 
@@ -159,7 +184,9 @@ MR.Game.PlayerState = class PlayerState {
       return true;
     }
 
-    if (this.vModeOn && this.problem.op === "-") {
+    if (this.problem.opKind === "fraction") {
+      if (MR.Game.FractionMath.handleHintTap(this, pos)) return true;
+    } else if (this.vModeOn && this.problem.op === "-") {
       if (MR.Game.VerticalMath.handleBorrowClick(this, pos)) return true;
     }
     return false;
@@ -179,6 +206,11 @@ MR.Game.PlayerState = class PlayerState {
     if (now - this.lastInputTime > 1.5) this.inputBuffer = [];
     this.inputBuffer.push(keyStr);
     this.lastInputTime = now;
+
+    if (this.problem.opKind === "fraction") {
+      MR.Game.FractionMath.processInput(this);
+      return;
+    }
 
     const needsVertical = MR.Game.VerticalMath.needsVertical(this.problem);
     if (this.vModeOn && needsVertical) {
@@ -207,6 +239,7 @@ MR.Game.PlayerState = class PlayerState {
     if (prof) prof.stats.ops[this.problem.op].c += 1;
     this.problem = this.generateProblem();
     MR.Game.VerticalMath.resetState(this);
+    MR.Game.FractionMath.resetState(this);
   }
 
   wrong() {
@@ -228,6 +261,7 @@ MR.Game.PlayerState = class PlayerState {
       this.shakeAmount = 0;
     }
     MR.Game.VerticalMath.updateAnim(this.vm, dt);
+    MR.Game.FractionMath.updateAnim(this.fm, dt);
     this.particles = this.particles.filter((p) => { p.update(); return p.life > 0; });
   }
 
@@ -279,7 +313,9 @@ MR.Game.PlayerState = class PlayerState {
       const cx = this.layout.cx + shakeX;
       const cy = this.layout.problemCenterY;
 
-      if (this.vModeOn && needsVert) {
+      if (this.problem.opKind === "fraction") {
+        MR.Game.FractionMath.draw(ctx, this, cx, cy);
+      } else if (this.vModeOn && needsVert) {
         MR.Game.VerticalMath.draw(ctx, this, cx, cy);
       } else {
         const fontPx = Math.min(80, Math.max(48, (this.layout.problemBottom - this.layout.problemTop) * 0.5));

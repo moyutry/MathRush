@@ -66,7 +66,11 @@ MR.I18N = {
     "1. הקש על כפתור השיתוף בסרגל הכלים": "1. Tap the Share button in the toolbar",
     "2. גלול ובחר \"הוסף למסך הבית\"": "2. Scroll down and choose \"Add to Home Screen\"",
     "3. הקש \"הוסף\" למעלה מימין": "3. Tap \"Add\" in the top corner",
-    "הקש בכל מקום כדי לסגור": "Tap anywhere to close"
+    "הקש בכל מקום כדי לסגור": "Tap anywhere to close",
+    "כללי": "General", "שברים": "Fractions",
+    "תרגילי שברים": "Fraction Exercises", "פעולות בשברים": "Fraction Operations",
+    "מכנה משותף:": "Common denominator:", "מכנה משותף?": "Common denominator?",
+    "הופכים ואז כופלים": "Flip, then multiply"
   },
 
   isEn() {

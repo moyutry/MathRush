@@ -13,15 +13,36 @@ MR.Screens.TextInput = {
     const kbW = 1380, kbH = 320;
     this.keyboard = new MR.UI.VirtualKeyboard(MR.LOGICAL_W / 2 - kbW / 2, MR.LOGICAL_H - kbH - 34, kbW, kbH);
     this._hoverPos = { x: -1, y: -1 };
+    this._stopBackspaceRepeat();
   },
 
   onPointerMove(app, pos) { this._hoverPos = pos; },
-  onPointerUp() {},
+
+  onPointerUp() {
+    this._stopBackspaceRepeat();
+  },
 
   onPointerDown(app, pos) {
     const result = this.keyboard.onPointerDown(pos);
     if (result === undefined) return;
     this._applyKeyResult(app, result);
+
+    // Press-and-hold on Backspace keeps deleting instead of requiring one
+    // tap per character: apply once immediately (already done above), then
+    // after a short delay start repeating until pointerup/pointercancel.
+    if (result === "BACKSPACE") {
+      this._stopBackspaceRepeat();
+      this._bsTimeout = setTimeout(() => {
+        this._bsInterval = setInterval(() => this._applyKeyResult(app, "BACKSPACE"), 90);
+      }, 450);
+    }
+  },
+
+  _stopBackspaceRepeat() {
+    clearTimeout(this._bsTimeout);
+    clearInterval(this._bsInterval);
+    this._bsTimeout = null;
+    this._bsInterval = null;
   },
 
   _applyKeyResult(app, result) {

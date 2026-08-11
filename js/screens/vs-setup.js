@@ -3,7 +3,7 @@ MR.Screens = MR.Screens || {};
 
 MR.Screens.VsSetup = {
   onEnter(app) {
-    const names = Object.keys(MR.Store.saveData.profiles).filter((n) => n !== MR.Store.currentUser);
+    const names = Object.keys(MR.Store.saveData.profiles).filter((n) => n !== MR.Store.currentUser && n !== "אורח" && n !== "Guest");
     const items = [...names, "אורח"];
     const cx = MR.LOGICAL_W / 2;
     const top = 156, maxBottom = 692;

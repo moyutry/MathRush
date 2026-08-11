@@ -181,6 +181,12 @@ MR.GameApp = {
     }
 
     MR.Store.save();
+    // Guest opponents are written into the live saveData.profiles object
+    // (see startGame) so PlayerState/addXp can treat them like any other
+    // profile for the match; strip them back out now so PROFILES/VS_SETUP
+    // never list "Guest" as a real, persistent player.
+    delete MR.Store.saveData.profiles["אורח"];
+    delete MR.Store.saveData.profiles["Guest"];
     this.goto("OVER");
   }
 };

@@ -19,10 +19,12 @@ MR.Game.sortedEquals = function (bufArr, targetStr) {
 
 MR.Game.VerticalMath = {
   needsVertical(problem) {
+    if (problem.opKind === "fraction") return false;
     return (problem.a >= 10 || problem.b >= 10) && problem.op !== "/";
   },
 
   resetState(player) {
+    if (player.problem.opKind === "fraction") { player.vm = null; return; }
     const { a, b } = player.problem;
     const aStr = String(a), bStr = String(b);
     const maxLen = Math.max(aStr.length, bStr.length);
